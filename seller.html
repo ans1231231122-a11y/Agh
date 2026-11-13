@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>أضف منتجك | شُرَاك</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body data-page="seller">
+    <header class="header">
+    <div class="container header-inner">
+      <div class="logo-wrap">
+        <div class="logo" id="logoBtn">
+          <div class="logo-icon">
+            <svg viewBox="0 0 48 48" fill="none"><path d="M12 14C12 10.6863 14.6863 8 18 8H30C33.3137 8 36 10.6863 36 14V18H40C42.2091 18 44 19.7909 44 22V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V22C4 19.7909 5.79086 18 8 18H12V14Z" fill="#0A2540"/><path d="M16 22H32V38H16V22Z" fill="#1E6BFF"/><path d="M20 14H28V22H20V14Z" fill="#0A2540"/><circle cx="24" cy="30" r="4" fill="white"/></svg>
+          </div>
+          <span class="logo-name">شُرَاك</span>
+        </div>
+        <div class="logo-menu" id="logoMenu">
+          <a href="index.html">الرئيسية</a>
+          <a href="products.html">المنتجات</a>
+          <a href="seller.html">أضف منتج</a>
+          <a href="orders.html">طلباتي</a>
+          <a href="terms.html">الشروط والأحكام</a>
+          <div class="divider"></div>
+          <a href="admin.html" id="adminLink" class="hidden">لوحة الإدارة</a>
+          <a href="login.html">تسجيل الدخول</a>
+          <a href="register.html">إنشاء حساب</a>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="profile-wrap">
+          <button class="profile-btn" id="profileBtn" aria-label="الحساب">
+            <img id="profileAvatar" class="hidden" alt="" />
+            <svg id="profileIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+          <div class="profile-menu" id="profileMenu">
+            <div id="profileMenuGuest">
+              <a href="login.html">تسجيل الدخول</a>
+              <a href="register.html">إنشاء حساب</a>
+            </div>
+            <div id="profileMenuUser" class="hidden">
+              <a href="account.html">حسابي</a>
+              <a href="orders.html">طلباتي</a>
+              <div class="divider"></div>
+              <button id="logoutBtn">تسجيل الخروج</button>
+            </div>
+          </div>
+        </div>
+        <a href="cart.html" class="btn-cart" aria-label="السلة">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span id="cartCount" class="cart-badge">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-header"><div class="container"><h1>لوحة البائع</h1><p>أضف منتجاتك وابدأ البيع</p></div></div>
+  <div class="container">
+    <div id="sellerGuest" class="form-card">
+      <h2>سجل دخولك أولاً</h2>
+      <p class="subtitle">للبدء في بيع منتجاتك</p>
+      <button class="btn btn-primary btn-block" onclick="loginWithGoogle()">دخول بـ Google</button>
+    </div>
+    <div id="sellerContent" class="hidden">
+      <div class="form-card">
+        <h2>إضافة منتج جديد</h2>
+        <p class="subtitle">ارفع صورة واضحة واملأ البيانات بدقة</p>
+        <form id="addProductForm">
+          <div class="form-group"><label>اسم المنتج *</label><input type="text" id="prodName" required /></div>
+          <div class="form-group"><label>الوصف *</label><textarea id="prodDesc" rows="3" required></textarea></div>
+          <div class="form-group"><label>السعر (ريال) *</label><input type="number" id="prodPrice" min="1" required /></div>
+          <div class="form-group"><label>القسم *</label>
+            <select id="prodCategory" required>
+              <option value="إلكترونيات">إلكترونيات</option>
+              <option value="أزياء">أزياء</option>
+              <option value="كتب">كتب</option>
+              <option value="ألعاب">ألعاب</option>
+              <option value="أخرى">أخرى</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>صورة المنتج *</label>
+            <input type="file" id="prodImage" accept="image/*" required />
+            <div id="imagePreview"></div>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="acceptTerms" required />
+            <label for="acceptTerms">أوافق على <a href="terms.html" target="_blank">الشروط والأحكام</a> وأتحمل مسؤولية المنتج</label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">نشر المنتج</button>
+        </form>
+      </div>
+      <div class="form-card" style="margin-top:20px">
+        <h2>منتجاتي</h2>
+        <div id="myProductsList"></div>
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>شُرَاك</strong> — سوقك الطلابي
+        <div class="footer-links">
+          <a href="index.html">الرئيسية</a>
+          <a href="products.html">المنتجات</a>
+          <a href="seller.html">أضف منتج</a>
+          <a href="terms.html">الشروط والأحكام</a>
+          <a href="account.html">حسابي</a>
+          <a href="orders.html">طلباتي</a>
+        </div>
+      </div>
+      <p style="margin-top:10px;opacity:0.8;font-size:0.85rem">© 2026 شُرَاك التجاري</p>
+    </div>
+  </footer>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

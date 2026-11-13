@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إنشاء حساب | شُرَاك</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card" style="max-width:520px">
+      <div style="text-align:center;margin-bottom:8px">
+        <a href="index.html" style="font-weight:800;font-size:1.4rem;color:var(--primary)">شُرَاك</a>
+      </div>
+      <h1>إنشاء حساب جديد</h1>
+      <p class="subtitle">املأ بياناتك للانضمام لسوق شُرَاك</p>
+
+      <form id="registerForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>الاسم الأول *</label>
+            <input type="text" id="regFirstName" required />
+          </div>
+          <div class="form-group">
+            <label>اسم العائلة *</label>
+            <input type="text" id="regLastName" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>البريد الإلكتروني *</label>
+          <input type="email" id="regEmail" required placeholder="name@email.com" dir="ltr" />
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور *</label>
+          <input type="password" id="regPassword" required minlength="6" placeholder="6 أحرف على الأقل" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>العمر *</label>
+            <input type="number" id="regAge" required min="10" max="100" />
+          </div>
+          <div class="form-group">
+            <label>الجنس *</label>
+            <div class="gender-options">
+              <label><input type="radio" name="gender" value="ذكر" required /> ذكر</label>
+              <label><input type="radio" name="gender" value="أنثى" /> أنثى</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>رقم الجوال *</label>
+          <input type="tel" id="regPhone" required placeholder="05xxxxxxxx" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>المدينة *</label>
+            <input type="text" id="regCity" required placeholder="جدة" />
+          </div>
+          <div class="form-group">
+            <label>الحي / المنطقة *</label>
+            <input type="text" id="regDistrict" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>الشارع / العنوان *</label>
+          <input type="text" id="regStreet" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="regSubmitBtn">إنشاء الحساب</button>
+      </form>
+
+      <p class="auth-switch">عندك حساب؟ <a href="login.html">تسجيل الدخول</a></p>
+      <p class="auth-switch" style="margin-top:8px"><a href="index.html">العودة للرئيسية</a></p>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("regSubmitBtn");
+      btn.disabled = true; btn.textContent = "جاري الإنشاء...";
+      try {
+        await registerWithEmail({
+          firstName: document.getElementById("regFirstName").value.trim(),
+          lastName: document.getElementById("regLastName").value.trim(),
+          email: document.getElementById("regEmail").value.trim(),
+          password: document.getElementById("regPassword").value,
+          age: document.getElementById("regAge").value,
+          gender: document.querySelector('input[name="gender"]:checked')?.value,
+          phone: document.getElementById("regPhone").value.trim(),
+          city: document.getElementById("regCity").value.trim(),
+          district: document.getElementById("regDistrict").value.trim(),
+          street: document.getElementById("regStreet").value.trim()
+        });
+      } catch (err) {
+        showToast(err.message || "فشل إنشاء الحساب");
+      } finally {
+        btn.disabled = false; btn.textContent = "إنشاء الحساب";
+      }
+    });
+  </script>
+</body>
+</html>

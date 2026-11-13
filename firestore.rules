@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isOwner(userId) { return signedIn() && request.auth.uid == userId; }
+    function isAdmin() {
+      return signedIn() &&
+        get(/databases/$(database)/documents/customers/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /customers/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && request.resource.data.role == 'user'
+                    && request.resource.data.banned != true;
+      // يمنع العميل من ترقية نفسه أو تغيير حالة الحظر/الصلاحيات.
+      allow update: if isAdmin() || (isOwner(userId) &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['name','displayName','photoURL','phone','city','address','notificationsEnabled']));
+      allow delete: if isAdmin();
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if signedIn() && request.resource.data.sellerId == request.auth.uid;
+      allow update, delete: if isAdmin() || (signedIn() && resource.data.sellerId == request.auth.uid);
+    }
+
+    match /orders/{orderId} {
+      allow read: if signedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    match /coupons/{couponId} {
+      allow read: if true; // بيانات الكوبون اللازمة للتحقق من الرمز في واجهة الدفع.
+      allow write: if isAdmin();
+    }
+
+    match /site_settings/{documentId} {
+      allow read: if documentId == 'public';
+      allow write: if isAdmin();
+    }
+
+    // سجل زيارات مختصر لا يتضمن الاسم أو البريد أو رقم الجوال.
+    match /site_visits/{visitId} {
+      allow create: if true && request.resource.data.keys().hasOnly(['page','createdAt','visitorId']);
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow create, read, update, delete: if isAdmin();
+    }
+
+    match /favorites/{userId} { allow read, write: if isOwner(userId); }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

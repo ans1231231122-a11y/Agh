@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة الإدارة | شُرَاك</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 30px; }
+    .stat-card { background: var(--surface); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); text-align: center; }
+    .stat-card .num { font-size: 2rem; font-weight: 800; color: var(--primary-light); }
+    .stat-card .label { font-size: 0.9rem; color: var(--text-muted); margin-top: 4px; }
+    .admin-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .admin-tab { padding: 10px 18px; border-radius: 50px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-weight: 600; }
+    .admin-tab.active { background: var(--primary-light); color: white; border-color: var(--primary-light); }
+    .admin-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+    .admin-table th, .admin-table td { padding: 12px 14px; text-align: right; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .admin-table th { background: var(--bg); font-weight: 700; }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-gray { background: #f3f4f6; color: #4b5563; }
+    .action-btn { padding: 5px 12px; border-radius: 6px; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin: 2px; }
+    .btn-del { background: #fee2e2; color: #991b1b; }
+    .btn-ban { background: #ffedd5; color: #9a3412; }
+    .btn-ok { background: #d1fae5; color: #065f46; }
+    .admin-section { display: none; }
+    .admin-section.active { display: block; }
+    .product-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 8px; background: #eee; }
+    .admin-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 16px}.admin-toolbar input,.admin-toolbar select,.admin-form input,.admin-form textarea,.admin-form select{padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--surface);font:inherit;min-width:180px}.admin-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;background:var(--surface);padding:18px;border-radius:14px;margin-bottom:18px;box-shadow:var(--shadow)}.admin-form label{display:flex;flex-direction:column;gap:6px;font-size:.88rem}.admin-form button{align-self:end}.admin-note{color:var(--text-muted);font-size:.85rem;margin:8px 0 16px}.admin-wide{overflow:auto}.admin-table{min-width:720px}.admin-tab{white-space:nowrap}.admin-hero-preview{padding:24px;border-radius:16px;background:linear-gradient(120deg,#082b52,#1e6bff);color:white;margin-bottom:18px}.admin-hero-preview h3{font-size:1.5rem;margin:0 0 8px}.admin-tab:focus-visible,.action-btn:focus-visible{outline:3px solid #1e6bff;outline-offset:2px}
+  </style>
+</head>
+<body data-page="admin">
+          <header class="header">
+    <div class="container header-inner">
+      <div class="logo-wrap">
+        <div class="logo" id="logoBtn">
+          <div class="logo-icon">
+            <svg viewBox="0 0 48 48" fill="none"><path d="M12 14C12 10.6863 14.6863 8 18 8H30C33.3137 8 36 10.6863 36 14V18H40C42.2091 18 44 19.7909 44 22V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V22C4 19.7909 5.79086 18 8 18H12V14Z" fill="#0A2540"/><path d="M16 22H32V38H16V22Z" fill="#1E6BFF"/><path d="M20 14H28V22H20V14Z" fill="#0A2540"/><circle cx="24" cy="30" r="4" fill="white"/></svg>
+          </div>
+          <span class="logo-name">شُرَاك</span>
+        </div>
+        <div class="logo-menu" id="logoMenu">
+          <a href="index.html">الرئيسية</a>
+          <a href="products.html">المنتجات</a>
+          <a href="seller.html">أضف منتج</a>
+          <a href="orders.html">طلباتي</a>
+          <a href="terms.html">الشروط والأحكام</a>
+          <div class="divider"></div>
+          <a href="admin.html" id="adminLink" class="hidden">لوحة الإدارة</a>
+          <a href="login.html">تسجيل الدخول</a>
+          <a href="register.html">إنشاء حساب</a>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="profile-wrap">
+          <button class="profile-btn" id="profileBtn" aria-label="الحساب">
+            <img id="profileAvatar" class="hidden" alt="" />
+            <svg id="profileIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+          <div class="profile-menu" id="profileMenu">
+            <div id="profileMenuGuest">
+              <a href="login.html">تسجيل الدخول</a>
+              <a href="register.html">إنشاء حساب</a>
+            </div>
+            <div id="profileMenuUser" class="hidden">
+              <a href="account.html">حسابي</a>
+              <a href="orders.html">طلباتي</a>
+              <div class="divider"></div>
+              <button id="logoutBtn">تسجيل الخروج</button>
+            </div>
+          </div>
+        </div>
+        <a href="cart.html" class="btn-cart" aria-label="السلة">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span id="cartCount" class="cart-badge">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+
+
+  <div class="page-header">
+    <div class="container">
+      <h1>لوحة تحكم الإدارة</h1>
+      <p>إدارة المنتجات والعملاء والطلبات</p>
+    </div>
+  </div>
+
+  <div class="container" style="padding-bottom:60px">
+    <!-- غير مصرح -->
+    <div id="adminDenied" class="form-card hidden" style="text-align:center">
+      <h2>غير مصرح لك</h2>
+      <p class="subtitle">هذه الصفحة مخصصة للإدارة فقط</p>
+      <a href="index.html" class="btn btn-primary">العودة للرئيسية</a>
+    </div>
+
+    <!-- يحتاج تسجيل -->
+    <div id="adminGuest" class="form-card hidden" style="text-align:center">
+      <h2>يجب تسجيل الدخول</h2>
+      <p class="subtitle">سجل دخولك بحساب الإدارة</p>
+      <button class="btn btn-primary btn-block" onclick="loginWithGoogle()">دخول بواسطة Google</button>
+    </div>
+
+    <!-- لوحة الإدارة -->
+    <div id="adminPanel" class="hidden">
+      <!-- إحصائيات -->
+      <div class="admin-grid">
+        <div class="stat-card"><div class="num" id="statVisits">0</div><div class="label">زيارات مسجلة</div></div>
+        <div class="stat-card"><div class="num" id="statProducts">0</div><div class="label">المنتجات</div></div>
+        <div class="stat-card"><div class="num" id="statUsers">0</div><div class="label">العملاء</div></div>
+        <div class="stat-card"><div class="num" id="statOrders">0</div><div class="label">الطلبات</div></div>
+        <div class="stat-card"><div class="num" id="statBanned">0</div><div class="label">محظورين</div></div>
+      </div>
+
+      <!-- التبويبات -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="products">المنتجات</button>
+        <button class="admin-tab" data-tab="users">العملاء</button>
+        <button class="admin-tab" data-tab="orders">الطلبات</button>
+        <button class="admin-tab" data-tab="coupons">الكوبونات</button>
+        <button class="admin-tab" data-tab="site">التحكم بالموقع</button>
+      </div>
+
+      <!-- المنتجات -->
+      <div id="tab-products" class="admin-section active">
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>الصورة</th>
+                <th>المنتج</th>
+                <th>السعر</th>
+                <th>البائع</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="adminProductsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- العملاء -->
+      <div id="tab-users" class="admin-section">
+        <div class="admin-toolbar"><input id="customerSearch" type="search" placeholder="ابحث بالاسم أو البريد أو الجوال أو رقم العميل" aria-label="بحث العملاء" /></div>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>الاسم / ID</th>
+                <th>البريد</th>
+                <th>الجوال</th>
+                <th>المدينة / العنوان</th>
+                <th>الإشعارات</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- الطلبات -->
+      <div id="tab-orders" class="admin-section">
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>رقم الطلب</th>
+                <th>العميل</th>
+                <th>المبلغ</th>
+                <th>الدفع</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="adminOrdersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="tab-coupons" class="admin-section">
+        <h2>إدارة الكوبونات</h2>
+        <p class="admin-note">أنشئ أكواد الخصم وحدد نوع الخصم وحد الاستخدام وتاريخ الانتهاء. يلزم التحقق من الكوبون بالخادم قبل اعتماد الدفع.</p>
+        <form id="couponForm" class="admin-form">
+          <label>رمز الكوبون<input id="couponCode" required maxlength="24" placeholder="SHURAK20" /></label>
+          <label>نوع الخصم<select id="couponType"><option value="percent">نسبة مئوية</option><option value="fixed">مبلغ ثابت (ر.س)</option><option value="shipping">شحن مجاني</option></select></label>
+          <label>قيمة الخصم<input id="couponValue" type="number" min="0" step="0.01" value="10" /></label>
+          <label>عدد الاستخدامات<input id="couponLimit" type="number" min="1" placeholder="غير محدود" /></label>
+          <label>تاريخ الانتهاء<input id="couponExpiry" type="date" /></label>
+          <button class="btn btn-primary" type="submit">إنشاء الكوبون</button>
+        </form>
+        <div class="admin-wide"><table class="admin-table"><thead><tr><th>الكود</th><th>النوع</th><th>القيمة</th><th>الاستخدام</th><th>الانتهاء</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="adminCouponsBody"></tbody></table></div>
+      </div>
+
+      <div id="tab-site" class="admin-section">
+        <h2>التحكم بالموقع الأساسي</h2>
+        <p class="admin-note">أي تعديل تحفظه هنا يظهر في الصفحة الرئيسية للزوار بعد تحديثها. لوحة التحكم منفصلة كصفحة إدارية لكنها تستخدم قاعدة البيانات نفسها.</p>
+        <div class="admin-hero-preview"><small>معاينة البنر الرئيسي</small><h3 id="heroPreviewTitle">كل اللي تحتاجه، في مكان واحد.</h3><p id="heroPreviewText">سوقك في مكان واحد.</p></div>
+        <form id="siteSettingsForm" class="admin-form">
+          <label>عنوان الصفحة الرئيسية<input id="siteHeroTitle" maxlength="90" /></label>
+          <label>وصف الصفحة الرئيسية<input id="siteHeroText" maxlength="180" /></label>
+          <label>نص زر التسوق<input id="siteButtonText" maxlength="35" /></label>
+          <label>رابط صورة البنر<input id="siteBanner" type="url" placeholder="https://..." /></label>
+          <label>رسالة الشريط العلوي<input id="siteAnnouncement" maxlength="120" placeholder="عروض شُرَاك مستمرة" /></label>
+          <button class="btn btn-primary" type="submit">حفظ ونشر التعديلات</button>
+        </form>
+        <div class="admin-grid">
+          <div class="stat-card"><div class="num" id="visitsToday">0</div><div class="label">زيارات اليوم (حسب السجل المتاح)</div></div>
+          <div class="stat-card"><div class="num" id="visitsPages">0</div><div class="label">صفحات مسجلة</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>شُرَاك</strong> — سوقك الطلابي
+        <div class="footer-links">
+          <a href="index.html">الرئيسية</a>
+          <a href="products.html">المنتجات</a>
+          <a href="seller.html">أضف منتج</a>
+          <a href="terms.html">الشروط والأحكام</a>
+          <a href="account.html">حسابي</a>
+          <a href="admin.html">لوحة الإدارة</a>
+        </div>
+      </div>
+      <p>© 2026 شُرَاك التجاري</p>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
